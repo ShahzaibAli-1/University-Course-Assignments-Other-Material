@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Sorting Visualizer</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Sorting Algorithm Visualizer</h1>
+        <input type="text" id="arrayInput" placeholder="Enter numbers separated by commas" style="width: 300px; height: 30px;">
+        <button onclick="visualizeSorting('bubble_sort')">Visualize Bubble Sort</button>
+        <button onclick="visualizeSorting('selection_sort')">Visualize Selection Sort</button>
+        <button onclick="visualizeSorting('insertion_sort')">Visualize Insertion Sort</button>
+        <button onclick="visualizeSorting('merge_sort')">Visualize Merge Sort</button>
+        <button onclick="visualizeSorting('heap_sort')">Visualize Heap Sort</button>
+        <button onclick="visualizeSorting('quick_sort')">Visualize Quick Sort</button>
+        <button onclick="visualizeSorting('counting_sort')">Visualize Counting Sort</button>
+        <button onclick="visualizeSorting('bucket_sort')">Visualize Bucket Sort</button>
+        <button onclick="visualizeSorting('radix_sort')">Visualize Radix Sort</button>
+
+        <div id="visualization" class="visualization"></div>
+    </div>
+
+    <script>
+        function visualizeSorting(algorithm) {
+            const arrayInput = document.getElementById('arrayInput').value;
+            const array = arrayInput.split(',').map(Number);
+
+            fetch(`/${algorithm}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ array: array })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let visualizationDiv = document.getElementById('visualization');
+                visualizationDiv.innerHTML = ''; // Clear previous visualizations
+                data.forEach((step, index) => {
+                    setTimeout(() => {
+                        visualizationDiv.innerHTML += `<div class="step">${step.join(', ')}</div>`;
+                    }, index * 1000); // 1 second interval
+                });
+            });
+        }
+    </script>
+</body>
+</html>
